@@ -7,6 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AForge.Video;
@@ -17,6 +18,16 @@ namespace Webcam_proj
 {
     class Program
     {
+        const int SW_HIDE = 0;
+        const int SW_SHOW = 5;
+
+        [DllImport("kerne132.dll")]
+        static extern IntPtr GetConsoleWindow();
+
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+
         private static IPEndPoint consumerEndPoint;
         private static UdpClient udpClient = new UdpClient();
         
@@ -33,7 +44,10 @@ namespace Webcam_proj
             videoSource.NewFrame += VideoSource_NewFrame;
             videoSource.Start();
 
+            Console.WriteLine("\nPress Enter to hide the console...");
             Console.ReadLine();
+
+            ShowWindow(GetConsoleWindow(), SW_HIDE);
         }
 
         private static void VideoSource_NewFrame(object sender, NewFrameEventArgs eventArgs)
