@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -17,9 +21,30 @@ namespace Webcam_proj
             InitializeComponent();
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private async void Form1_Load(object sender, EventArgs e)
         {
-            //sss
+            var port = int.Parse(ConfigurationManager.AppSettings.Get("port"));
+            var client = new UdpClient(port);
+
+            while (true)
+            {
+                var data = await client.ReceiveAsync();
+
+                using (var ms = new MemoryStream(data.Buffer))
+                {
+                    pictureBox1.Image = new Bitmap(ms);
+                }
+                Text = $"Bytes received: {data.Buffer.Length * sizeof(byte)}";
+            }
+        }
+
+        private void pictureBox1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            var host = Dns.GetHostEntry(Dns.GetHostName());
+            
+            MessageBox.Show(string.Join("\n", host.AddressList.
+                Where(i => i.AddressFamily == AddressFamily.InterNetwork)
+                .Select(i => i.ToString())));
         }
     }
 }

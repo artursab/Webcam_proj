@@ -40,6 +40,7 @@
             this.pictureBox1.Size = new System.Drawing.Size(800, 450);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseDoubleClick);
             // 
             // Form1
             // 
